@@ -5,9 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "babel-node src",
-    "test": "eslint src && flow && jest --coverage",
-    "precommit": "yarn test",
-    "prepush": "yarn test"
+    "test": "eslint src && flow && jest --coverage"
   },
   "dependencies": {},
   "devDependencies": {
@@ -29,5 +27,11 @@
   },
   "browserslist": [
     "> 1%"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test",
+      "pre-push": "yarn test"
+    }
+  }
 }
