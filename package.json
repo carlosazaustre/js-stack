@@ -4,16 +4,30 @@
   "author": "Carlos Azaustre <cazaustre@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node src",
-    "test": "eslint src && flow && jest --coverage"
+    "start": "yarn dev:start",
+    "dev:start": "nodemon -e js,jsx --ignore lib --ignore dist --exec babel-node src/server",
+    "dev:wds": "webpack-dev-server --progress",
+    "prod:build": "rimraf lib dist && babel src -d lib --ignore .test.js && cross-env NODE_ENV=production webpack -p --progress",
+    "prod:start": "cross-env NODE_ENV=production pm2 start lib/server && pm2 logs",
+    "prod:stop": "pm2 delete server",
+    "lint": "eslint src webpack.config.babel.js --ext .js,.jsx",
+    "test": "yarn lint && flow && jest --coverage"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "compression": "^1.7.3",
+    "express": "^4.16.4"
+  },
   "devDependencies": {
+    "@babel/core": "^7.2.0",
     "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
+    "babel-loader": "7",
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
+    "cross-env": "^5.2.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-compat": "^2.6.3",
@@ -23,7 +37,13 @@
     "eslint-plugin-react": "^7.11.0",
     "flow-bin": "^0.87.0",
     "husky": "^1.2.0",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.7",
+    "pm2": "^3.2.2",
+    "rimraf": "^2.6.2",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   },
   "browserslist": [
     "> 1%"
@@ -31,7 +51,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "yarn test",
-      "pre-push": "yarn test"
+      "pre-push": "yarn test && yarn prod:build"
     }
   }
 }
